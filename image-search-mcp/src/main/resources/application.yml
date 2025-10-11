@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: image-search-mcp-server
+  profiles:
+    active: stdio # application-{profile}.yml 指定运行哪个配置文件
+server:
+  port: 8123

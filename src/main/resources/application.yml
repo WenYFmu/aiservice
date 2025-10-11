@@ -1,0 +1,61 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: abc1128
+  application:
+    name: aiservice
+  ai:
+    dashscope:
+      api-key: sk-42cb53f0f4524bed9e8ad8b0b7447a3a
+      agent:
+        app-id: 2f2d6d5ce03140d78c331b7e91414a56
+      embedding:
+        enabled: false
+      chat:
+        options:
+          temperature: 0.3
+#          model: qwen-max
+    ollama:
+      embedding:
+        model: dengcao/Qwen3-Embedding-0.6B:F16
+        options:
+          num-ctx: 4096
+    model:
+      embedding: ollama
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+        dimensions: 1024
+        max-document-batch-size: 10000 # Optional: Maximum number of documents per batch
+    mcp:
+      client:
+        stdio:
+          servers-configuration: classpath:mcp-servers.json
+
+# springdoc-openapi
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.agent.aiservice
+# knife4j
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+  basic:
+    username: shamu
+    password: aiservice
+    enable: true
+server:
+  port: 8081
+  servlet:
+    context-path: '/api'
