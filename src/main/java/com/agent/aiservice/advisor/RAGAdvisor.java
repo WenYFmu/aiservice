@@ -20,13 +20,14 @@ public class RAGAdvisor {
     private VectorStore pgVectorStore;
     @Bean
     public Advisor pgSqlRAGAdvisor() {
+        //question_answer_context
         PromptTemplate customPromptTemplate = PromptTemplate.builder()
                 .renderer(StTemplateRenderer.builder().startDelimiterToken('<').endDelimiterToken('>').build())
                 .template("""
             上下文信息如下【信息是客服对话记录，请学习记录中客服的回答服务当前客户】。
 
       ---------------------
-      <question_answer_context>
+      <query> <context>
       ---------------------
 
       根据上下文信息且没有先验知识，回答查询。
@@ -44,6 +45,7 @@ public class RAGAdvisor {
                         .build())
                 .queryAugmenter(ContextualQueryAugmenter.builder()
                         .promptTemplate(customPromptTemplate)
+                        .allowEmptyContext(false)
                         .build())
                 .build();
     }

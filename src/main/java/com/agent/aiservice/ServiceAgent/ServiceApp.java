@@ -58,7 +58,7 @@ public class ServiceApp {
         ChatMemory chatMemory = MessageWindowChatMemory.builder()
                 .chatMemoryRepository(new InMemoryChatMemoryRepository())
                 //最大记忆条数
-                .maxMessages(10)
+                .maxMessages(20)
                 .build();
 
         //对话记忆存储到文件
@@ -102,7 +102,6 @@ public class ServiceApp {
     public String doChatWithRAG(String message, String chatId) {
         //todo 用户提示词重写【重写超级笨看看和Context-aware Queries (上下文感知查询)结合效果怎么样】
 //        String rewrittenMessage = queryRewriter.doRewriteQuery(message);
-
         //rag顾问
 
         ChatResponse chatResponse = chatClient
