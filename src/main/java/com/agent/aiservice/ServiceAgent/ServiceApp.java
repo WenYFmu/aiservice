@@ -35,6 +35,7 @@ public class ServiceApp {
             "- **沟通风格：** 专业、自信、像一位可靠的朋友，语言温暖而准确。
             "请运用你的专业能力，为客户提供卓越的服务体验。并且回答字数要在150字以内【在咨询有关商品信息或者商品售后信息时最首要的任务是问订单号！！拿到订单号后记住订单号】
             """;
+
     private final ChatClient chatClient;
 
 //    @Autowired

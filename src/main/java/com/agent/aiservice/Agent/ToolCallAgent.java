@@ -63,6 +63,7 @@ public class ToolCallAgent extends ReActAgent {
         }
         Prompt prompt = new Prompt(getMessageList(), chatOptions);
         try {
+            //执行思考
             ChatResponse chatResponse = getChatClient().prompt(prompt)
                     .toolCallbacks(availableTools)
                     .toolCallbacks(toolCallbackProvider)
