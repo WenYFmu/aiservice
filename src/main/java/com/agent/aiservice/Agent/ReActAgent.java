@@ -24,7 +24,7 @@ public abstract class ReActAgent extends BaseAgent {
             if(think()) {
                 return act();
             }
-            return "思考完成无需调用工具";
+            return "思考完成无需调用工具" + act();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return "执行步骤失败" + e.getMessage();

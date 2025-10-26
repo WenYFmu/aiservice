@@ -43,7 +43,7 @@ public class AiServiceController {
     */
     @GetMapping("/server_app/chat/sync")
     public String syncChat(@RequestParam(value = "query")String query, @RequestParam(value = "chatId")String chatId) {
-        return serviceApp.doChat(query, chatId);
+        return serviceApp.doChatWithRAG(query, chatId);
     }
 
     @GetMapping("/server_app/chat/sse")

@@ -25,17 +25,19 @@ public class RAGAdvisor {
                 .renderer(StTemplateRenderer.builder().startDelimiterToken('<').endDelimiterToken('>').build())
                 .template("""
             上下文信息如下【信息是客服对话记录，请学习记录中客服的回答服务当前客户】。
+            仅供学习，结合实际用户提问进行回复
 
       ---------------------
-      <query> <context>
+      <context>
       ---------------------
 
       根据上下文信息且没有先验知识，回答查询。
 
       遵循以下规则：
 
-      1. 如果答案不在上下文中，只需说你不知道。
-      2. 避免使用"根据上下文..."或"提供的信息..."等语句。
+      1. 避免使用"根据上下文..."或"提供的信息..."等语句。
+      2. 学习客服回答，但不要生搬硬套。
+      Query: <query>
       """)
                 .build();
         return RetrievalAugmentationAdvisor.builder()

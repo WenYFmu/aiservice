@@ -14,6 +14,8 @@ public class ToolRegistration {
     public ToolCallback[] toolCallback(){
         TerminateTool terminateTool = new TerminateTool();
         AskHumanTool askHumanTool = new AskHumanTool();
-        return ToolCallbacks.from(terminateTool);
+        AfterSalesFormTool afterSalesFormTool = new AfterSalesFormTool();
+        ReturnOrderTool returnOrderTool = new ReturnOrderTool();
+        return ToolCallbacks.from(terminateTool, afterSalesFormTool, returnOrderTool);
     }
 }

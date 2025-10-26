@@ -33,6 +33,8 @@ public abstract class BaseAgent {
     //对话上下文，后面实现自主控制的工具调用所以自己维护 todo:实现对话上下文的id，持久化存储
     private List<Message> messageList = new ArrayList<>();
 
+    private String lastResult = "";
+    private Integer count = 0;
     public String run(String userPrompt){
         //校验参数
         if(StrUtil.isBlank(userPrompt)){
@@ -50,6 +52,14 @@ public abstract class BaseAgent {
             try {
                 int stepNum = ++currentStep;
                 String stepResult = step();// 智能体结束将调用结束工具改变AgentState.FINISHED
+                if(lastResult.equals(stepResult)){
+                    count++;
+                }else count = 0;
+                if(count > 2){
+                    //陷入循环立即结束
+                    agentState = AgentState.FINISHED;
+                }
+                lastResult = stepResult;
                 results.add("执行" + stepNum + stepResult);
                 //超过最大执行步数将终止
                 if(currentStep >= maxStep){
@@ -91,10 +101,18 @@ public abstract class BaseAgent {
             messageList.add(new UserMessage(userPrompt));
             try {
                 for (int i = 0; i < maxStep && agentState == AgentState.RUNNING; i++) {
-                        int stepNum = ++currentStep;
-                        String stepResult = step();// 智能体结束将调用结束工具改变AgentState.FINISHED
-                        sseEmitter.send("执行：" + stepNum + stepResult);
-                        //超过最大执行步数将终止
+                    int stepNum = ++currentStep;
+                    String stepResult = step();// 智能体结束将调用结束工具改变AgentState.FINISHED
+                    if(lastResult.equals(stepResult)){
+                        count++;
+                    }else count = 0;
+                    if(count > 2){
+                        //陷入循环立即结束
+                        agentState = AgentState.FINISHED;
+                    }
+                    lastResult = stepResult;
+                    sseEmitter.send(stepNum + "执行：" + stepResult);
+                    //超过最大执行步数将终止
                 }
                 if (currentStep >= maxStep) {
                     sseEmitter.send("执行次数达到最大次数" + currentStep + "/" + maxStep);

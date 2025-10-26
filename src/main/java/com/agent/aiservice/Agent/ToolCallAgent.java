@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -35,6 +36,11 @@ public class ToolCallAgent extends ReActAgent {
 
     //MCP工具
     private ToolCallbackProvider toolCallbackProvider;
+
+    //上一次工具调用若重复3次则终止
+    private AssistantMessage lastToolCall = new AssistantMessage("");
+    private Integer count = 0;
+
     //工具调用信息 大模型响应
     private ChatResponse toolCallResponse;
 
@@ -66,11 +72,18 @@ public class ToolCallAgent extends ReActAgent {
             //执行思考
             ChatResponse chatResponse = getChatClient().prompt(prompt)
                     .toolCallbacks(availableTools)
-                    .toolCallbacks(toolCallbackProvider)
+//                    .toolCallbacks(toolCallbackProvider)
                     .call()
                     .chatResponse();
             this.toolCallResponse = chatResponse;
             AssistantMessage assistantMessage = chatResponse.getResult().getOutput();
+            if(assistantMessage.getToolCalls().isEmpty() && lastToolCall.getToolCalls().isEmpty()) {
+                count++;
+            }else count = 0;
+            if(count > 2){
+                return true;
+            }
+            lastToolCall = assistantMessage;
             List<AssistantMessage.ToolCall> toolCalls = assistantMessage.getToolCalls();
             //输出提示信息
             String result = assistantMessage.getText();
@@ -97,8 +110,12 @@ public class ToolCallAgent extends ReActAgent {
 
     @Override
     protected String act() {
+        if(count > 2){
+            setAgentState(AgentState.FINISHED);
+            return lastToolCall.getText();
+        }
         if(!toolCallResponse.hasToolCalls()){
-            return "没有调用工具";
+            return "";
         }
         Prompt prompt = new Prompt(getMessageList(), this.chatOptions);
         ToolExecutionResult toolExecutionResult = toolCallingManager.executeToolCalls(prompt, toolCallResponse);

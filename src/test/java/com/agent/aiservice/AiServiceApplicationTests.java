@@ -39,16 +39,19 @@ class AiServiceApplicationTests {
     @Test
     void doChatWithRag() {
         UUID uuid = UUID.randomUUID();
+        StringBuilder say = new StringBuilder();
         //多轮对话第一轮
-        serviceApp.doChatWithRAG("你好，我是杉木", uuid.toString());
+        say.append(serviceApp.doChatWithRAG("你好，我是杉木", uuid.toString()));
         //多轮对话第二轮WithRAG
-        serviceApp.doChatWithRAG("商品支持退货吗？？", uuid.toString());
+        say.append(serviceApp.doChatWithRAG("商品支持退货吗？？", uuid.toString()));
         //多轮对话第三轮WithRAG
-        serviceApp.doChatWithRAG("订单号是123456", uuid.toString());
+        say.append(serviceApp.doChatWithRAG("订单号是123456", uuid.toString()));
         //多轮对话第四轮WithRAG
-        serviceApp.doChatWithRAG("我要退货", uuid.toString());
+        say.append(serviceApp.doChatWithRAG("我要退货", uuid.toString()));
         //多轮对话第五轮WithRAG
-        serviceApp.doChatWithRAG("我刚刚和你说了订单号和需求你全忘了？没忘的话复述一遍", uuid.toString());}
+        say.append(serviceApp.doChatWithRAG("我刚刚和你说了订单号和需求你全忘了？没忘的话复述一遍", uuid.toString()));
+        System.out.println(say);
+    }
 
     @Test
     void doChatWithMCP() {

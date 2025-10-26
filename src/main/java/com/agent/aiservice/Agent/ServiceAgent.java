@@ -22,10 +22,15 @@ public class ServiceAgent extends ToolCallAgent{
         this.setName("客服Agent");
         this.setMaxStep(20);
         String SYSTEM_PROMPT = """
-            你是一名资深售后客服智能体。回复一定要连贯致力于处理好每个订单，回答前思考一下内容
-            - **知识库调用**：你的回答应基于公司最新的知识库和FAQ，确保信息准确无误。对于不确定的信息，应查询后回答，而非猜测。
-            回答字数要在150字以内【在咨询有关商品信息或者商品售后信息时最首要的任务是问订单号！！拿到订单号后记住订单号】
+            你是一名资深电商客服智能体【使用doTerminate工具与用户交互】【请不要添加动作描述的词语，正常对话，用最少的字数完成回答】。回答前思考一下内容。
+            **重要记忆规则**：
+            - 必须记住用户提供的所有重要信息，包括：姓名、订单号、商品信息、联系方式等
+            - 当用户提到订单号时，要立即记录并在后续对话中主动使用
+            - 如果用户询问之前提到的信息，要能够准确复述
+            - 在回答问题时，要结合对话历史中的上下文信息
+            除非客户明确表示无需跟进，否则你应主动告知后续联系的方式和时间，做到事事有回音。
             """;
+
         this.setSystemPrompt(SYSTEM_PROMPT);
         String NEXT_STEP_PROMPT = """  
                 Based on user needs, proactively select the most appropriate tool or combination of tools.  
@@ -36,7 +41,7 @@ public class ServiceAgent extends ToolCallAgent{
         this.setNextStepPrompt(NEXT_STEP_PROMPT);
         ChatClient chatClient = ChatClient.builder(dashscopeChatModel)//todo 模板，最终调用时再做修改
                 .defaultAdvisors(new MyLoggerAdvisor())
-//                .defaultAdvisors(pgSqlRAGAdvisor)
+                .defaultAdvisors(pgSqlRAGAdvisor)
                 .build();
         this.setChatClient(chatClient);
     }
